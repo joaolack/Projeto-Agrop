@@ -25,7 +25,7 @@ class Produto extends Model
         return $this->belongsTo(Categoria::class, 'categoria_id');
     }
 
-    public function getEstoqueStatusAttribute()
+    public function getEstoqueStatusAttribute() // Acessor Laravel para status do estoque
     {
         if ($this->quant_estoque <= 0) {
             return 'Em Falta';

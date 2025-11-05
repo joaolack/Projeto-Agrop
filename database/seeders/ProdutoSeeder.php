@@ -61,5 +61,94 @@ class ProdutoSeeder extends Seeder
             'estoque_min' => 10,
             'data_validade' => now()->addMonths(12),
         ]);
+
+        Produto::create([
+            'nome' => 'Semente de Milho Híbrido (10kg)',
+            'descricao' => 'Alto potencial de produtividade. Pacote de 10kg.',
+            'preco_venda' => 320.00,
+            'preco_custo' => 250.00,
+            'categoria_id' => $sementeId,
+            'quant_estoque' => 15,       
+            'estoque_min' => 5,
+            'data_validade' => now()->addDays(20), // Vence em menos de 30 dias (Alerta de validade)
+        ]);
+
+        Produto::create([
+            'nome' => 'Vacina Antirrábica 1 dose',
+            'descricao' => 'Vacina obrigatória para cães e gatos. Armazenar refrigerado.',
+            'preco_venda' => 35.00,
+            'preco_custo' => 15.00,
+            'categoria_id' => $medicamentoId,
+            'quant_estoque' => 0,        // << ESTOQUE ZERO (Em Falta)
+            'estoque_min' => 20,
+            'data_validade' => now()->addMonths(18),
+        ]);
+
+        Produto::create([
+            'nome' => 'Ração para Aves Postura (5kg)',
+            'descricao' => 'Ração completa para galinhas poedeiras.',
+            'preco_venda' => 25.00,
+            'preco_custo' => 12.00,
+            'categoria_id' => $racaoId,
+            'quant_estoque' => 150,      // << Estoque alto
+            'estoque_min' => 30,
+            'data_validade' => now()->addMonths(5),
+        ]);
+
+        Produto::create([
+            'nome' => 'Bebedouro Automático 5 Litros',
+            'descricao' => 'Bebedouro por gravidade, ideal para pequenos animais.',
+            'preco_venda' => 65.00,
+            'preco_custo' => 35.00,
+            'categoria_id' => $ferramentaId,
+            'quant_estoque' => 10,        
+            'estoque_min' => 10,           // << Estoque Mínimo Exato (Atenção)
+            'data_validade' => null,
+        ]);
+
+        Produto::create([
+            'nome' => 'Fertilizante NPK 10-10-10 (25kg)',
+            'descricao' => 'Adubo balanceado para uso geral em hortaliças e jardins.',
+            'preco_venda' => 199.90,
+            'preco_custo' => 120.00,
+            'categoria_id' => $sementeId, 
+            'quant_estoque' => 50,
+            'estoque_min' => 15,
+            'data_validade' => now()->addYears(2), // Validade Longa
+        ]);
+
+        Produto::create([
+            'nome' => 'Antibiótico Injetável para Bovinos',
+            'descricao' => 'Frasco de 50ml. Uso em casos de infecções sistêmicas.',
+            'preco_venda' => 180.00,
+            'preco_custo' => 95.00,
+            'categoria_id' => $medicamentoId, 
+            'quant_estoque' => 3,          // << Estoque Baixo Crítico
+            'estoque_min' => 5,
+            'data_validade' => now()->addDays(5), // << Vencimento Imediato (Máximo Alerta)
+        ]);
+
+        Produto::create([
+            'nome' => 'Tesoura de Poda Profissional',
+            'descricao' => 'Lâmina de aço temperado, cabo emborrachado.',
+            'preco_venda' => 75.00,
+            'preco_custo' => 38.00,
+            'categoria_id' => $ferramentaId, 
+            'quant_estoque' => 10,
+            'estoque_min' => 10,             // << Testa o limite exato
+            'data_validade' => null, 
+        ]);
+
+        Produto::create([
+            'nome' => 'Ração para Peixes de Lago',
+            'descricao' => 'Flutuante, pacote de 1kg.',
+            'preco_venda' => 45.00,
+            'preco_custo' => 25.00,
+            'categoria_id' => $racaoId, 
+            'quant_estoque' => 0,          // << ESTOQUE ZERO (Em Falta)
+            'estoque_min' => 20,
+            'data_validade' => now()->addMonths(4), 
+        ]);
+        
     }
 }
