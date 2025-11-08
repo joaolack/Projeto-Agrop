@@ -14,8 +14,8 @@ Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
 
-Route::middleware(['auth'])->group(function() {
-    Route::resource('produtos', ProdutoController::class);
-});
+Route::resource('produtos', ProdutoController::class)->middleware(['auth']);
+
+
 
 require __DIR__.'/auth.php';
