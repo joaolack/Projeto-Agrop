@@ -27,12 +27,12 @@ new #[Layout('layouts.guest')] class extends Component
 <div>
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')"/>
-    <div class="w-full max-w-md mx-auto my-12 bg-white  rounded-lg p-8">
+    <div class="w-full max-w-md mx-auto my-12 bg-white dark:bg-gray-800 rounded-xl p-8 sm:p-10">
 
 
-        <div class="text-center mb-6">
-            <h1 class="text-3xl font-extrabold text-green-700">AgroStock</h1>
-            <p class="text-gray-500 mt-1">Acesse sua conta para gerenciar seu estoque!</p>
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-extrabold text-green-700 dark:text-green-500 tracking-tight">AgroStock</h1>
+            <p class="text-gray-500 dark:text-gray-400 mt-2 text-base">Acesse sua conta para gerenciar seu estoque!</p>
         </div>
 
 
@@ -41,7 +41,7 @@ new #[Layout('layouts.guest')] class extends Component
             <!-- Email Address -->
             <div class="mb-4">
                 <x-input-label for="email" :value="__('Email')" />
-                <x-text-input wire:model="form.email" id="email" class="block mt-1 w-full" type="email" name="email" required autofocus autocomplete="username" />
+                <x-text-input wire:model="form.email" id="email" class="block mt-1 w-full rounded-lg" type="email" name="email" required autofocus autocomplete="username" />
                 <x-input-error :messages="$errors->get('form.email')" class="mt-2" />
             </div>
 
@@ -49,7 +49,7 @@ new #[Layout('layouts.guest')] class extends Component
             <div class="mb-6">
                 <x-input-label for="password" :value="__('Senha')" />
 
-                <x-text-input wire:model="form.password" id="password" class="block mt-1 w-full"
+                <x-text-input wire:model="form.password" id="password" class="block mt-1 w-full rounded-lg"
                                 type="password"
                                 name="password"
                                 required autocomplete="current-password" />

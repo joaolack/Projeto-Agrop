@@ -24,20 +24,21 @@ new class extends Component
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}" wire:navigate>
-                        <x-application-logo class="block h-9 w-auto fill-current text-white dark:text-gray-200 hover:text-white" />
+                        <x-application-logo class="block h-9 w-auto fill-current text-white dark:text-white" />
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
-                        {{ __('Painel de Controle') }}
+                        {{ __('Dashboard') }}
                     </x-nav-link>
                 </div>
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('produtos.index')" :active="request()->routeIs('produtos.*')" wire:navigate>
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">    
+                    <x-nav-link :href="route('produtos.index')" :active="request()->routeIs('alunos.*')" wire:navigate>
                         {{ __('Estoque') }}
                     </x-nav-link>
+                </div>
             </div>
 
             <!-- Settings Dropdown -->
