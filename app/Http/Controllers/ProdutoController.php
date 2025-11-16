@@ -54,11 +54,13 @@ class ProdutoController extends Controller
     public function update(Request $request, Produto $produto)
     {
         $validated = $request->validate([
-            'nome' => 'required|string|max:255',
-            'descricao' => 'nullable|string',
-            'preco_venda' => 'required|numeric|min:0',
-            'categoria_id' => 'required|exists:categorias,id',
-            'quant_estoque' => 'required|integer|min:0',
+            'nome' => ['required', 'string', 'max:150', Rule::unique('produtos', 'nome')->ignore($produto->id)],
+            'descricao' => ['nullable', 'string'],
+            'preco_venda' => ['required', 'numeric', 'min:0.01'],
+            'preco_custo' => ['required', 'numeric', 'min:0'],
+            'categoria_id' => ['required', 'exists:categorias,id'],
+            'estoque_min' => ['required', 'integer', 'min:0'],
+            'data_validade' => ['nullable', 'date', 'after:today'],
         ]);
 
         $produto->update($validated);
@@ -70,5 +72,34 @@ class ProdutoController extends Controller
     {
         $produto->delete();
         return redirect()->route('produtos.index')->with('success', 'Produto excluído com sucesso');
+    }
+
+    public function moveEstoque(Request $request, Produto $produto)
+    {
+        $validated = $request->validate([
+            'quantidade' => ['required', 'integer', 'min:1'],
+            'operacao' => ['required', 'in:entrada,saida'],
+        ]);
+
+        $quantidade = $validated['quantidade'];
+        $operacao = $validated['operacao'];
+
+        $request->session()->flash('operacao', $operacao);
+
+        if ($operacao === 'entrada') {
+            $produto->quant_estoque += $quantidade;
+            $mensagem = "✅ Entrada de **{$quantidade}** unidades de {$produto->nome} registrada com sucesso!";
+        
+        } elseif ($operacao === 'saida') {
+            if ($produto->quant_estoque < $quantidade) {
+                return back()->withErrors(['quantidade' => 'A quantidade de saída não pode ser maior que o estoque atual (' . $produto->quant_estoque . ').'])
+                        ->withInput();
+            }
+            $produto->quant_estoque -= $quantidade;
+            $mensagem = "✅ Saída de **{$quantidade}** unidades de {$produto->nome} registrada com sucesso!";
+        }
+
+        $produto->save();
+        return redirect()->route('produtos.edit', $produto->id)->with('sucess', $mensagem);
     }
 }

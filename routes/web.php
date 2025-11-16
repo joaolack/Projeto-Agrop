@@ -4,7 +4,7 @@ use App\Http\Controllers\ProdutoController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'welcome');
+Route::redirect('/', '/login');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
@@ -15,7 +15,8 @@ Route::view('profile', 'profile')
     ->name('profile');
 
 Route::resource('produtos', ProdutoController::class)->middleware(['auth']);
-
+Route::post('produtos/{produto}/move', [ProdutoController::class, 'moveEstoque'])
+    ->name('produtos.moveEstoque');
 
 
 require __DIR__.'/auth.php';

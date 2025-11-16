@@ -6,28 +6,22 @@
         {{ __('Início (Dashboard)') }}
     </h2>
 
-    {{-- Linha de KPIs (Estatísticas Gerais) --}}
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        {{-- Total de Produtos --}}
         <div class="card bg-white p-6 rounded-lg shado-md border-l-4 border-indigo-500">
             <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total de Produtos Cadastrados</p>
             <p class="text-3xl font-bold text-gray-900"> {{ number_format($totalProdutos, 0, ',', '.')}}</p>
         </div>
 
-
-        {{-- Produtos em Falta --}}
         <div class="card bg-white p-6 rounded-lg shadow-md border-l-4 border-red-500">
             <p class="text-sm font-medium text-gray-500">Produtos Em Falta (Zero)</p>
             <p class="text-3xl font-bold text-red-500">{{ $produtosEmFalta}}</p>
         </div>
 
-        {{-- Valor total do Estoque --}}
         <div class="card bg-white p-6 rounded-lg shadow-md border-l-4 border-green-500">
             <p class="text-sm font-medium text-gray-500">Valor Total do Estoque (Custo)</p>
             <p class="text-xl font-bold text-gray-900">R$ {{ number_format($valorTotalEstoque, 2, ',', '.')}}</p>
         </div>
 
-        {{-- Alertas Críticos (Total de Baixo Estoque) --}}
         <div class="card bg-white p-6 rounded-lg shadow-md border-l-4 border-yellow-500">
             <p class="text-sm font-medium text-gray-500">Total de Itens Críticos</p>
             {{-- Calcula o total de produtos que estão abaixo ou igual ao estoque mínimo --}}
@@ -35,10 +29,8 @@
         </div>
     </div>
 
-    {{-- Linha de Alertas Detalhados --}}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-        {{-- Alerta 1: Produtos com Estoque Crítico --}}
         <div class="bg-white p-6 rounded-lg shadow-md">
             <h3 class="text-xl font-semibold mb-4 text-red-700 border-b pb-2">Itens Abaixo do Estoque Mínimo</h3>
             @if ($estoqueCritico->isEmpty())
@@ -62,24 +54,28 @@
             @endif        
         </div>
     
-        {{-- Alerta 2: Produtos Próximos da Validade --}}
         <div class="bg-white p-6 rounded-lg shado-md">
             <h3 class="text-xl font-semibold mb-4 text-yellow-700 border-b pb-2">Produtos com Vencimento próximo</h3>
             @if ($vencimentoProximo->isEmpty())
-                 <p class="text-gray-500">Nenhum produto vencendo em breve.</p>
+                <p class="text-gray-500">Nenhum produto vencendo em breve.</p>
             @else
                 <ul class="divide-y divide-gray-100">
                     @foreach ($vencimentoProximo->take(5) as $produto)
                         <li class="py-3 flex justify-between itens-center text-sm">
                             <span class="font-medium text-gray-900">{{ $produto->nome}}</span>
                             @php
-                                $diasRestantes = \Carbon\Carbon::parse($produto->data_validade)->diffInDays(\Carbon\Carbon::now(), false);
-                                $dataVencimento = \Carbon\Carbon::parse($produto->data_validade)->format('d/m/Y');
+                                $validade = \Carbon\Carbon::parse($produto->data_validade)->startOfDay();
+                                $hoje = \Carbon\Carbon::now()->startOfDay();
+                                $diasStatus = $hoje->diffInDays($validade, false); 
+                                $diasAbsolutos = abs($diasStatus); 
+                                $dataVencimento = $validade->format('d/m/Y');
                             @endphp
-                            @if ($diasRestantes <= 0)
-                                <span class="text-red-600 font-bold">EXPIRADO em {{ $dataVencimento}}</span>
+                            @if ($diasStatus < 0) 
+                                <span class="text-red-600 font-bold">EXPIRADO HÁ {{ $diasAbsolutos }} DIAS ({{ $dataVencimento}})</span>
+                            @elseif ($diasStatus === 0)
+                                <span class="text-red-600 font-bold">VENCE HOJE ({{ $dataVencimento}})</span>
                             @else
-                                <span class="text-yellow-600">Vence em {{ $diasRestantes}} dias ({{ $dataVencimento}})</span>
+                                <span class="text-yellow-600">Vence em {{ $diasAbsolutos}} dias ({{ $dataVencimento}})</span>
                             @endif
                         </li>
                     @endforeach
@@ -87,7 +83,7 @@
                         <a href="{{ route('produtos.index') }}" class="text-indigo-600 hover:underline">Ver todos</a>
                     </li>
                 </ul>
-            @endif    
+            @endif 
         </div>
     </div>
 </div>

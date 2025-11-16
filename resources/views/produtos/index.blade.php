@@ -10,14 +10,13 @@
                     Lista de Produtos
                 </h1>
 
-                <a href="{{ route('produtos.create') }}" class="bg-green-600 hover:bg-[#015724] text-white font-bold py-2 px-4 rounded mb-4 inline-block transition duration-200">
+                <a href="{{ route('produtos.create') }}" class="bg-green-600 hover:bg-[#015724] text-white font-bold py-3 px-4 rounded transition duration-200 inline-block">
                     + Novo Produto
                 </a>
 
                 <div class="overflow-x-auto mt-6 rounded">
                     <table class="w-full">
                         <thead class="bg-gray-100 dark:bg-gray-700 border-x border-gray-100 dark:border-gray-700">
-                            <tr>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium
                                     text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                     Produto
@@ -79,19 +78,27 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">{{ $produto->descricao }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-500 text-center">
                                     @if ($produto->data_validade)
-                                        @if (\Carbon\Carbon::parse($produto->data_validade)->isPast())
-                                            <span class="text-red-500 font-bold">EXPIRADO!</span>
-                                    @elseif (\Carbon\Carbon::parse($produto->data_validade)->lessThan(now()->addDays(30)))
-                                            <span class="text-yellow-600">Vence em {{ \Carbon\Carbon::parse($produto->data_validade)->diffInDays(now()) }} dias</span>
-                                    @else
-                                            {{ \Carbon\Carbon::parse($produto->data_validade)->format('d/m/Y') }}
+                                        @php
+                                            $validade = \Carbon\Carbon::parse($produto->data_validade)->startOfDay();
+                                            $hoje = \Carbon\Carbon::now()->startOfDay();
+                                            $diasStatus = $hoje->diffInDays($validade, false);  
+                                            $diasAbsolutos = abs($diasStatus); 
+                                        @endphp
+                                        @if ($diasStatus < 0) 
+                                            <span class="text-red-500 font-bold">EXPIRADO HÁ {{ $diasAbsolutos }} DIAS!</span>
+                                        @elseif ($diasStatus === 0)
+                                            <span class="text-red-600 font-bold">VENCE HOJE!</span>
+                                        @elseif ($diasStatus <= 30) 
+                                            <span class="text-yellow-600">Vence em {{ $diasAbsolutos }} dias</span>
+                                        @else
+                                            {{ $validade->format('d/m/Y') }}
                                         @endif
                                     @else
                                         N/A
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <a href="{{ route('produtos.edit', $produto) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-3 transition duration-150">
+                                    <a href="{{ route('produtos.edit', $produto->id) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-3 transition duration-150">
                                         Editar
                                     </a>
                             

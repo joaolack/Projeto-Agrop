@@ -22,12 +22,16 @@ class Produto extends Model
         'data_validade',
     ];
 
+    protected $casts = [
+        'data_validade' => 'date',
+    ];
+
     public function categoria()
     {
         return $this->belongsTo(Categoria::class, 'categoria_id');
     }
 
-    public function getEstoqueStatusAttribute() // Acessor Laravel para status do estoque
+    public function getEstoqueStatusAttribute() 
     {
         if ($this->quant_estoque <= 0) {
             return 'Em Falta';
